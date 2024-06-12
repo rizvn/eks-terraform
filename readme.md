@@ -10,8 +10,8 @@ The following tapology will be deployed:
   
 
 -  EKS cluster with
-   - OIDC enable for IRSA
-   - With Addons
+   - OIDC enabled for IRSA
+   - With Addons for 
      - CoreDNS
      - VPC CNI with Network policy support
      - Kube-proxy
