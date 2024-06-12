@@ -3,7 +3,6 @@ The aim of this terraform project to is to create a cluster that is ready for us
 The following tapology will be deployed:
 ![Diagram](docs/eks-terraform.svg)
 
-The based scripts will create 
 - VPC with 
   - 3 public subnets
   - 3 private subnets
@@ -17,7 +16,7 @@ The based scripts will create
      - VPC CNI with Network policy support
      - Kube-proxy
 
-- Ongress-only nodegroup 
+- Ingress-only nodegroup 
 - General nodegroup
 
 Additional modules are defined in under the extras and can enabled through values in `01-variables.tf`
