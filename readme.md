@@ -54,15 +54,33 @@ List nodes to test connectivity
 kubectl get nodes
 ````
 
-Test users
+Test users (if users module is enabled)
+```bash
+- accesskey and secretkey are generated for the user
+
+configure the user profile
 ```bash
 aws configure --profile user1
+```
+
+Create assume profile for user 1
+```bash
+vim ~/.aws/config
+````
+
+```bash
+[profile eks-admin]
+role_arn = arn:aws:iam::<your-account-number>:role/eks-admin
+source_profile = user1
+``
+
+
 # set access id and secret key
 kubectl get nodes
 ```
 
 
 #### References
-source: https://github.dev/antonputra/tutorials/blob/main/lessons/125/terraform/1-vpc.tf
-source: https://github.com/mstiri/eks-cluster/blob/main/cluster.tf#L23
+- https://github.com/antonputra/tutorials/blob/main/lessons/125/terraform/1-vpc.tf
+- https://github.com/mstiri/eks-cluster/blob/main/cluster.tf
 
