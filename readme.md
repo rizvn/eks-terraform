@@ -1,7 +1,7 @@
 The aim of this terraform project to is to create a cluster that is ready for use with all the necessary addons and features enabled.
 
 The following tapology will be deployed:
-![Digaram](docs/eks-terraform.svg")
+![Diagram](docs/eks-terraform.svg)
 
 The based scripts will create 
 - VPC with 
