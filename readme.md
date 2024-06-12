@@ -1,6 +1,7 @@
-The aim of this terraform project to is to create a cluster that is ready for use with all the necessary addons and features enabled.
+This terraform project will create a ready to use cluster with the necessary addons and features.
 
 The following tapology will be deployed:
+
 ![Diagram](docs/eks-terraform.svg)
 
 - VPC with 
