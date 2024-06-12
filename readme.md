@@ -8,8 +8,8 @@ The based scripts will create
   
 
 -  EKS cluster with
-  - OIDC enable for IRSA
-  - With Addons
+   - OIDC enable for IRSA
+   - With Addons
      - CoreDNS
      - VPC CNI with Network policy support
      - Kube-proxy
@@ -30,7 +30,7 @@ Additional modules include:
 
 
 # Deployment
-Set Default AWS Profile to ue
+Set Default AWS Profile to use. This should be the profile that has the necessary permissions to create the resources in the account
 ```bash
 export AWS_PROFILE=test
 ```
@@ -40,15 +40,19 @@ Update values and flags in `01-variable.tf`
 Deploy 
 ```bash
 terraform init
-terraform plan
+terraform apply
 ```
 
 
-Update kubeconfg for the new cluster
+Update local kubeconfig for the new cluster
 ```bash
 aws eks update-kubeconfig --region <your-region> --name  <your-cluster-name>
-kubectl get nodes
 ```
+
+List nodes to test connectivity
+```bash
+kubectl get nodes
+````
 
 Test users
 ```bash
