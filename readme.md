@@ -19,7 +19,7 @@ The following tapology will be deployed:
 - Ingress-only nodegroup 
 - General nodegroup
 
-Additional modules are defined in under the extras and can enabled through values in `01-variables.tf`
+Additional modules are defined under the extras and can enabled through values in `01-variables.tf`
 
 Additional modules include:
 - AWS Load balancer
