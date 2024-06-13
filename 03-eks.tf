@@ -52,10 +52,14 @@ module "eks" {
     },
     coredns = {
       most_recent = true
-
       resolve_conflicts_on_create = "OVERWRITE"
       resolve_conflicts_on_update = "OVERWRITE"
       service_account_role_arn    = module.deny_all_irsa.iam_role_arn
+    },
+
+    aws-ebs-csi-driver = {
+      most_recent = true
+      service_account_role_arn = module.ebs-csi-driver-irsa.iam_role_arn
     }
 
   }
