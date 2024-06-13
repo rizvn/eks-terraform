@@ -1,6 +1,6 @@
 resource "aws_ec2_client_vpn_endpoint" "vpn" {
   description = "VPN endpoint"
-  client_cidr_block = "10.1.1.0/24"
+  client_cidr_block = "10.1.0.0/24"
   split_tunnel = true
   server_certificate_arn = aws_acm_certificate.server_cert.arn
 
