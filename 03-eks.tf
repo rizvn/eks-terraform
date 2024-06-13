@@ -36,6 +36,8 @@ module "eks" {
   cluster_addons = {
     vpc-cni = {
       most_recent              = true
+      resolve_conflicts_on_create = "OVERWRITE"
+      resolve_conflicts_on_update = "OVERWRITE"
       before_compute           = true
       service_account_role_arn = module.vpc_cni_irsa.iam_role_arn
       configuration_values = jsonencode({
@@ -44,7 +46,6 @@ module "eks" {
     },
     kube-proxy = {
       most_recent = true
-
       resolve_conflicts_on_create = "OVERWRITE"
       resolve_conflicts_on_update = "OVERWRITE"
       service_account_role_arn    = module.deny_all_irsa.iam_role_arn
@@ -56,6 +57,7 @@ module "eks" {
       resolve_conflicts_on_update = "OVERWRITE"
       service_account_role_arn    = module.deny_all_irsa.iam_role_arn
     }
+
   }
 
   eks_managed_node_group_defaults = {
@@ -140,7 +142,62 @@ module "vpc_cni_irsa" {
       namespace_service_accounts = ["kube-system:aws-node"]
     }
   }
+}
 
+
+module "ebs-csi-driver-irsa" {
+  source  = "terraform-aws-modules/iam/aws//modules/iam-role-for-service-accounts-eks"
+  version = "~> 5.39.1"
+
+  role_name      = "ebs-csi-driver-irsa"
+  attach_ebs_csi_policy = true
+
+  oidc_providers = {
+    main = {
+      provider_arn               = module.eks.oidc_provider_arn
+      namespace_service_accounts = ["kube-system:ebs-csi-controller-sa", "kube-system:ebs-csi-node-sa"]
+    }
+  }
+}
+
+resource "kubernetes_service_account" "ebs-csi-controller-sa" {
+  metadata {
+    name      = "ebs-csi-controller-sa"
+    namespace = "kube-system"
+    annotations = {
+      "eks.amazonaws.com/role-arn"               = module.ebs-csi-driver-irsa.iam_role_arn
+    }
+  }
+}
+
+
+resource "kubernetes_service_account" "ebs-csi-node-sa" {
+  metadata {
+    name      = "ebs-csi-node-sa"
+    namespace = "kube-system"
+    annotations = {
+      "eks.amazonaws.com/role-arn"               = module.ebs-csi-driver-irsa.iam_role_arn
+    }
+  }
+}
+
+
+
+resource "kubernetes_storage_class" "gp3" {
+  metadata {
+    name = "gp3"
+    annotations = {
+      "storageclass.kubernetes.io/is-default-class" = "true"
+    }
+  }
+  storage_provisioner = "ebs.csi.aws.com"
+  reclaim_policy      = "Delete"
+  allow_volume_expansion = true
+  parameters = {
+    encrypted = "true"
+    fsType     = "ext4"
+    type = "gp3"
+  }
 }
 
 module "deny_all_irsa" {

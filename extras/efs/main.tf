@@ -8,6 +8,24 @@ resource "aws_efs_file_system" "efs" {
   }
 }
 
+resource "aws_efs_access_point" "efs_ap" {
+  file_system_id = aws_efs_file_system.efs.id
+  posix_user {
+    gid = 1000
+    uid = 1000
+  }
+
+  root_directory {
+    path = "/"
+
+    creation_info {
+      owner_gid = 1000
+      owner_uid = 1000
+      permissions = "770"
+    }
+  }
+}
+
 
 resource "aws_efs_backup_policy" "policy" {
   file_system_id = aws_efs_file_system.efs.id
@@ -44,9 +62,18 @@ resource "kubernetes_storage_class" "nfs" {
     name = "nfs"
   }
   storage_provisioner = "efs.csi.aws.com"
+  reclaim_policy = "Delete"
 
   parameters = {
-    provisioner = "efs.csi.aws.com"
-    file_system_id = aws_efs_file_system.efs.id
+    directoryPerms = "770"
+    fileSystemId = aws_efs_file_system.efs.id
+    gidRangeStart = "1000"
+    gidRangeEnd = "3000"
+    provisioningMode = "efs-ap"
+    uidRangeStart=  "1000"
+    uidRangeEnd = "3000"
+
   }
 }
+
+

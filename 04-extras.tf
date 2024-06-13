@@ -61,3 +61,23 @@ module "efs" {
   efs_creation_token = "cluster-01-efs"
   vpc_id = module.vpc.vpc_id
 }
+
+
+module "client-vpn" {
+  depends_on = [module.vpc]
+  count = var.deploy["client-vpn"] ? 1 : 0
+  source = "./extras/client-vpn"
+  cluster_name = var.cluster_name
+  vpc_id = module.vpc.vpc_id
+  vpc_cidr = var.vpc_cidr
+  logging_enabled = false
+  logging_retention_in_days = 30
+  logging_stream_name = "${var.cluster_name}-client-vpn-log-stream"
+  log_group = "${var.cluster_name}-client-vpn-log-group"
+  private_subnet_ids = module.vpc.private_subnets
+  export_client_certificate = true
+
+  ca_common_name = "${var.cluster_name}-client-vpn-ca"
+  server_common_name = "${var.cluster_name}-client-vpn-server"
+  client_common_name = "${var.cluster_name}-client-vpn-server-client-0"
+}

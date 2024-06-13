@@ -10,14 +10,25 @@ module "iam-role" {
   oidc_providers = {
     main = {
       provider_arn               = var.oidc_provider_arn
-      namespace_service_accounts = ["kube-system:efs-csi-controller-sa"]
+      namespace_service_accounts = ["kube-system:efs-csi-controller-sa", "kube-system:efs-csi-node-sa"]
     }
   }
 }
 
-resource "kubernetes_service_account" "service-account" {
+resource "kubernetes_service_account" "efs-csi-controller-sa" {
   metadata {
     name      = "efs-csi-controller-sa"
+    namespace = "kube-system"
+    annotations = {
+      "eks.amazonaws.com/role-arn"   = module.iam-role.iam_role_arn
+    }
+  }
+}
+
+
+resource "kubernetes_service_account" "efs-csi-node-sa" {
+  metadata {
+    name      = "efs-csi-node-sa"
     namespace = "kube-system"
     annotations = {
       "eks.amazonaws.com/role-arn"   = module.iam-role.iam_role_arn
@@ -46,5 +57,15 @@ resource "helm_release" "aws_efs_csi_driver" {
   set {
     name  = "controller.serviceAccount.name"
     value = "efs-csi-controller-sa"
+  }
+
+  set {
+    name  = "node.serviceAccount.create"
+    value = "false"
+  }
+
+  set {
+    name  = "node.serviceAccount.name"
+    value = "efs-csi-node-sa"
   }
 }
