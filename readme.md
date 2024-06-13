@@ -22,7 +22,7 @@ The following tapology will be deployed:
 
 Additional modules are defined under the extras and can enabled through values in `01-variables.tf`
 
-Additional modules include:
+Additional modules are configured through `04-extras.tf`. The following modules are available:
 - AWS Load balancer
 - Cluster Autoscaler
 - Karpenter Autoscaler
