@@ -85,7 +85,10 @@ kubectl get nodes
 ```
 
 
-Client vpn if deployed
+Connect to client vpn if deployed
+Download the client config from aws console name it `config.ovpn` and place it in `~/Downloads`
+
+Then run the following command to connect to the VPN
 ```bash
 sudo openvpn \
   --config ~/Downloads/config.ovpn \
