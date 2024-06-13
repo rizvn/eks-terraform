@@ -4,14 +4,15 @@ variable "deploy" {
   # set to false to disable the deployment of the following modules
   # don't deploy karpenter and cluster-autoscaler together
   default = {
+    ebs_csi            = true
     internal_ingress   = false
     external_ingress   = false
     aws_lb_ctlr        = false
     users              = false
     karpenter          = false
-    cluster-autoscaler = false
+    cluster_autoscaler = false
     efs                = false
-    client-vpn         = false
+    client_vpn         = true
   }
 }
 

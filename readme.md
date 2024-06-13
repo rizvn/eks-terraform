@@ -29,6 +29,8 @@ Additional modules are configured through `04-extras.tf`. The following modules 
 - Nginx Ingress (internal and external)
 - Users (IAM users with EKS Access)
 - EFS fs connected to the EKS cluster using EFS CSI driver
+- EBS CSI driver for gp3 volumes
+- AWS VPN Client for remote access to private subnets
 
 
 
@@ -82,6 +84,15 @@ source_profile = user1
 kubectl get nodes
 ```
 
+
+Client vpn if deployed
+```bash
+sudo openvpn \
+  --config ~/Downloads/config.ovpn \
+  --ca certs/ca.crt \
+  --cert certs/client.crt \
+  --key certs/client.key
+```
 
 #### References
 - https://github.com/antonputra/tutorials/blob/main/lessons/125/terraform/1-vpc.tf

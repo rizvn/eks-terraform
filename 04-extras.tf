@@ -4,6 +4,14 @@ module "users" {
   vpc_owner_id = module.vpc.vpc_owner_id
 }
 
+module "ebs-csi" {
+  depends_on = [module.eks]
+  count = var.deploy["ebs_csi"] ? 1 : 0
+  source = "./extras/ebs-csi"
+  oidc_provider_arn = module.eks.oidc_provider_arn
+}
+
+
 module "aws-loadbalancer-controller" {
   count = var.deploy["aws_lb_ctlr"] ? 1 : 0
   source              = "./extras/aws-loadbalancer-controller"
@@ -43,7 +51,7 @@ module "karpenter" {
 
 module "cluster-autoscaler" {
   depends_on = [module.eks]
-  count = var.deploy["cluster-autoscaler"] ? 1 : 0
+  count = var.deploy["cluster_autoscaler"] ? 1 : 0
   source = "./extras/cluster-autoscaler"
   cluster_name = var.cluster_name
   oidc_provider_arn = module.eks.oidc_provider_arn
@@ -65,19 +73,11 @@ module "efs" {
 
 module "client-vpn" {
   depends_on = [module.vpc]
-  count = var.deploy["client-vpn"] ? 1 : 0
+  count = var.deploy["client_vpn"] ? 1 : 0
   source = "./extras/client-vpn"
   cluster_name = var.cluster_name
   vpc_id = module.vpc.vpc_id
   vpc_cidr = var.vpc_cidr
-  logging_enabled = false
-  logging_retention_in_days = 30
-  logging_stream_name = "${var.cluster_name}-client-vpn-log-stream"
-  log_group = "${var.cluster_name}-client-vpn-log-group"
   private_subnet_ids = module.vpc.private_subnets
-  export_client_certificate = true
 
-  ca_common_name = "${var.cluster_name}-client-vpn-ca"
-  server_common_name = "${var.cluster_name}-client-vpn-server"
-  client_common_name = "${var.cluster_name}-client-vpn-server-client-0"
 }
