@@ -10,7 +10,7 @@ variable "deploy" {
     users              = false
     karpenter          = false
     cluster-autoscaler = false
-    efs                = true
+    efs                = false
     client-vpn         = false
   }
 }
